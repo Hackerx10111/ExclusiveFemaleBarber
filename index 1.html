@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exclusive Female Barber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+        /* ─── RESET & VARIABLES ─── */
+        
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+         :root {
+            --gold: #c9922a;
+            --gold-light: #f0c06a;
+            --black: #0d0d0d;
+            --dark: #151515;
+            --card-bg: #1a1a1a;
+            --text: #e8e0d5;
+            --muted: #888;
+            --radius: 16px;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--black);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        /* ─── GRAIN OVERLAY ─── */
+        
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.35;
+        }
+        /* ─── SCROLLBAR ─── */
+        
+         ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+         ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+        /* ─── CURSOR DOT ─── */
+        
+        #cursor {
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s, width 0.2s, height 0.2s;
+            z-index: 10000;
+            mix-blend-mode: difference;
+        }
+        
+        #cursor.big {
+            width: 40px;
+            height: 40px;
+            opacity: 0.5;
+        }
+        /* ─── HEADER ─── */
+        
+        header {
+            background: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(201, 146, 42, 0.2);
+            animation: slideDown 0.6s ease forwards;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-60px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--gold);
+            letter-spacing: 0.5px;
+        }
+        
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--gold);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        /* ─── HERO ─── */
+        
+        .hero {
+            position: relative;
+            height: 92vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('imge 2.jpeg') center/cover no-repeat;
+            filter: brightness(0.35);
+            transform: scale(1.05);
+            animation: heroZoom 8s ease forwards;
+        }
+        
+        @keyframes heroZoom {
+            from {
+                transform: scale(1.05);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .hero-content {
+            position: relative;
+            text-align: center;
+            z-index: 2;
+            animation: fadeUp 1s 0.4s ease both;
+        }
+        
+        .hero-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 6px 18px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .hero h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            line-height: 1.1;
+            color: #fff;
+            text-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
+        }
+        
+        .hero h2 em {
+            color: var(--gold);
+            font-style: normal;
+        }
+        
+        .hero-sub {
+            margin-top: 18px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+        }
+        
+        .hero-cta {
+            margin-top: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: var(--gold);
+            color: var(--black);
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 0 30px rgba(201, 146, 42, 0.4);
+        }
+        
+        .hero-cta:hover {
+            background: var(--gold-light);
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px rgba(201, 146, 42, 0.6);
+        }
+        
+        .hero-scroll {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            animation: bounce 2s infinite;
+        }
+        
+        .hero-scroll span {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+        }
+        
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0)
+            }
+            50% {
+                transform: translateX(-50%) translateY(8px)
+            }
+        }
+        /* ─── SECTION BASE ─── */
+        
+        section {
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.15;
+        }
+        /* ─── ABOUT ─── */
+        
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .about-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 220px 220px;
+            gap: 12px;
+        }
+        
+        .about-images img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
+            transition: transform 0.5s ease, filter 0.4s;
+            filter: brightness(0.85) saturate(0.9);
+        }
+        
+        .about-images img:hover {
+            transform: scale(1.04);
+            filter: brightness(1) saturate(1.1);
+        }
+        
+        .about-images img:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            height: 100%;
+        }
+        
+        .about-images img:nth-child(2) {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .about-images img:nth-child(3) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        
+        .about-text .section-title {
+            margin-bottom: 20px;
+        }
+        
+        .about-text p {
+            color: var(--muted);
+            line-height: 1.9;
+            margin-bottom: 16px;
+            font-size: 0.97rem;
+        }
+        
+        .about-text p strong {
+            color: var(--text);
+        }
+        
+        .about-text .btn-outline {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 13px 30px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        
+        .about-text .btn-outline:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+        /* ─── DIVIDER ─── */
+        
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 0 auto;
+        }
+        /* ─── SERVICES ─── */
+        
+        #services {
+            background: var(--dark);
+            max-width: 100%;
+            padding: 100px 40px;
+        }
+        
+        #services .inner {
+            max-width: 1200px;
+            margin: auto;
+        }
+        
+        .services-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        /* ─── SERVICE CARD ─── */
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform 0.35s cubic-bezier(.22, .68, 0, 1.2), box-shadow 0.35s;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--gold);
+        }
+        /* IMAGE WRAPPER — fixed equal height */
+        
+        .service-img {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            /* ← all cards same height */
+            overflow: hidden;
+        }
+        
+        .service-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease, filter 0.4s;
+            filter: brightness(0.8);
+        }
+        
+        .card:hover .service-img img {
+            transform: scale(1.08);
+            filter: brightness(0.5);
+        }
+        /* HOVER OVERLAY */
+        
+        .hover-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+        
+        .card:hover .hover-overlay {
+            opacity: 1;
+        }
+        
+        .hover-overlay .click-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #fff;
+            letter-spacing: 1px;
+            animation: pulse 1.2s ease infinite;
+        }
+        
+        .hover-overlay .hover-price {
+            background: var(--gold);
+            color: var(--black);
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 6px 20px;
+            border-radius: 30px;
+            transform: translateY(10px);
+            transition: transform 0.3s 0.1s ease;
+        }
+        
+        .card:hover .hover-overlay .hover-price {
+            transform: translateY(0);
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
+        }
+        /* CARD BODY */
+        
+        .card-body {
+            padding: 18px 20px 22px;
+        }
+        
+        .card-body h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        
+        .card-body p {
+            font-size: 0.83rem;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        
+        .card-price {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 1rem;
+        }
+        /* ─── POPUP ─── */
+        
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .popup-overlay.active {
+            display: flex;
+        }
+        
+        .popup-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(201, 146, 42, 0.3);
+            border-radius: 24px;
+            padding: 36px 32px;
+            max-width: 520px;
+            width: 90%;
+            animation: popIn 0.35s cubic-bezier(.22, .68, 0, 1.4) forwards;
+            position: relative;
+            text-align: center;
+        }
+        
+        @keyframes popIn {
+            from {
+                transform: scale(0.85) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .popup-close:hover {
+            color: var(--gold);
+        }
+        
+        .popup-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        
+        .popup-service-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 22px;
+        }
+        
+        .catalogue-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .catalogue-images img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+        
+        .catalogue-images img:hover {
+            transform: scale(1.03);
+        }
+        
+        .popup-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 22px;
+        }
+        
+        .popup-book-btn {
+            display: inline-block;
+            padding: 13px 36px;
+            background: var(--gold);
+            color: var(--black);
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .popup-book-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+        /* ─── CONTACT ─── */
+        
+        #contact {
+            background: var(--black);
+            display: flex;
+            justify-content: center;
+            padding: 100px 40px;
+        }
+        
+        .contact-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(201, 146, 42, 0.2);
+            border-radius: 28px;
+            padding: 50px 40px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            animation: fadeUp 0.6s ease both;
+        }
+        
+        .contact-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+        }
+        
+        .contact-item a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .contact-item a:hover {
+            color: var(--gold);
+        }
+        
+        .icon {
+            font-size: 1.3rem;
+        }
+        
+        .contact-card .book-btn {
+            display: block;
+            margin-top: 30px;
+            padding: 16px;
+            background: var(--gold);
+            color: var(--black);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 0 30px rgba(201, 146, 42, 0.35);
+        }
+        
+        .contact-card .book-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-3px);
+        }
+        /* ─── FOOTER ─── */
+        
+        .site-footer {
+            background: #090909;
+            border-top: 1px solid rgba(201, 146, 42, 0.15);
+            padding: 60px 40px 24px;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+            max-width: 1100px;
+            margin: auto;
+        }
+        
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            margin-bottom: 14px;
+            font-size: 1rem;
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--gold);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .social-icons a {
+            width: 38px;
+            height: 38px;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        
+        .social-icons a:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+        
+        .social-icons svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--gold);
+        }
+        
+        .social-icons a:hover svg {
+            fill: var(--black);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+            padding-top: 18px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #444;
+        }
+        /* ─── BACK TO TOP ─── */
+        
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 46px;
+            height: 46px;
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            z-index: 900;
+            box-shadow: 0 4px 20px rgba(201, 146, 42, 0.5);
+            transition: transform 0.2s, opacity 0.3s;
+        }
+        
+        #scrollTopBtn:hover {
+            transform: translateY(-4px);
+        }
+        /* ─── SCROLL ANIMATE ─── */
+        
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+        
+        .scroll-animate.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* ─── BOOK CONFIRM POPUP ─── */
+        
+        #popup .popup-box {
+            text-align: center;
+        }
+        
+        #popup .popup-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+        
+        #popup .popup-box p {
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin-bottom: 24px;
+        }
+        
+        .popup-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .popup-buttons button {
+            padding: 12px 28px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        
+        .cancel {
+            background: #2a2a2a;
+            color: var(--text);
+        }
+        
+        .cancel:hover {
+            background: #333;
+        }
+        
+        .continue {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        .continue:hover {
+            background: var(--gold-light);
+        }
+        /* ─── ANIMATIONS ─── */
+        
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* ─── RESPONSIVE ─── */
+        
+        @media (max-width: 900px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+            .about-images {
+                grid-template-rows: 180px 180px;
+            }
+        }
+        
+        @media (max-width: 580px) {
+            header {
+                padding: 16px 20px;
+            }
+            nav {
+                gap: 16px;
+            }
+            section {
+                padding: 70px 20px;
+            }
+            .services-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .service-img {
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CUSTOM CURSOR -->
+    <div id="cursor"></div>
+
+    <!-- BACK TO TOP -->
+    <button id="scrollTopBtn">↑</button>
+
+    <!-- HEADER -->
+    <header>
+        <div>
+            <div class="logo-text">Exclusive Female Barber</div>
+            <div class="logo-sub">Precision · Style · Confidence</div>
+        </div>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-tag">✦ Orlando, Johannesburg</div>
+            <h2>Where Style Meets<br><em>Perfection</em></h2>
+            <p class="hero-sub">Premium cuts, fades &amp; designs crafted for women</p>
+            <a href="#services" class="hero-cta">✦ Explore Services</a>
+        </div>
+        <div class="hero-scroll">SCROLL <span></span></div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="about-container scroll-animate">
+            <div class="about-images">
+                <img src="img9.jpeg" alt="Barber at work" />
+                <img src="imge 7.jpeg" alt="Hair styling" />
+                <img src="img 3.jpeg" alt="Style detail" />
+            </div>
+            <div class="about-text">
+                <p class="section-label">Our Story</p>
+                <h2 class="section-title">More Than a Cut —<br>A Statement.</h2>
+                <p>At <strong>Exclusive Female Barber</strong>, we believe a haircut is more than just a service — it's a declaration of confidence, identity, and self-expression.</p>
+                <p>Our studio gives women a comfortable, stylish, and empowering space where they can enjoy professional grooming without compromise. From clean classic cuts to bold fades and creative designs, we deliver precision with every touch.</p>
+                <p>We combine modern barbering techniques with a passion for beauty and detail, ensuring every client leaves feeling fresh, confident, and powerful.</p>
+                <a href="about.html" class="btn-outline">Explore More →</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SERVICES -->
+    <div id="services">
+        <div class="inner">
+            <div class="services-header scroll-animate">
+                <p class="section-label">What We Offer</p>
+                <h2 class="section-title">Our Services</h2>
+            </div>
+
+            <div class="services-grid">
+
+                <!-- Classic Cut -->
+                <div class="card scroll-animate" onclick="openCatalogue('classic')">
+                    <div class="service-img">
+                        <img src="img 3.jpeg" alt="Classic Cut" />
+                        <div class="hover-overlay">
+                            <span class="click-label">Click Me ✦</span>
+                            <span class="hover-price">R120</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Classic Cut</h3>
+                        <p>Clean, sharp, and timeless precision.</p>
+                        <div class="card-price">R120</div>
+                    </div>
+                </div>
+
+                <!-- Fade & Line-Up -->
+                <div class="card scroll-animate" onclick="openCatalogue('fade')">
+                    <div class="service-img">
+                        <img src="cut.jpeg" alt="Fade & Line-Up" />
+                        <div class="hover-overlay">
+                            <span class="click-label">Click Me ✦</span>
+                            <span class="hover-price">R150</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Fade &amp; Line-Up</h3>
+                        <p>Modern fades with crisp, clean lines.</p>
+                        <div class="card-price">R150</div>
+                    </div>
+                </div>
+
+                <!-- Hair Design -->
+                <div class="card scroll-animate" onclick="openCatalogue('design')">
+                    <div class="service-img">
+                        <img src="img6.jpeg" alt="Hair Design" />
+                        <div class="hover-overlay">
+                            <span class="click-label">Click Me ✦</span>
+                            <span class="hover-price">R180</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Hair Design</h3>
+                        <p>Creative patterns &amp; custom designs.</p>
+                        <div class="card-price">R180</div>
+                    </div>
+                </div>
+
+                <!-- Wash & Style -->
+                <div class="card scroll-animate" onclick="openCatalogue('wash')">
+                    <div class="service-img">
+                        <img src="hairstyle.jpeg" alt="Wash & Style" />
+                        <div class="hover-overlay">
+                            <span class="click-label">Click Me ✦</span>
+                            <span class="hover-price">R100</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Wash &amp; Style</h3>
+                        <p>Relax, refresh, and shine.</p>
+                        <div class="card-price">R100</div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /grid -->
+        </div>
+        <!-- /inner -->
+    </div>
+
+    <!-- SERVICE CATALOGUE POPUP -->
+    <div class="popup-overlay" id="cataloguePopup">
+        <div class="popup-box">
+            <button class="popup-close" onclick="closeCatalogue()">×</button>
+            <h2 id="catalogueTitle">Hairstyle Catalogue</h2>
+            <div class="popup-service-price" id="popupPrice"></div>
+            <div class="catalogue-images" id="catalogueImages"></div>
+            <p class="popup-desc" id="popupDesc"></p>
+            <button class="popup-book-btn" onclick="closeCatalogue(); document.getElementById('popup').classList.add('active')">Book This Style →</button>
+        </div>
+    </div>
+
+    <!-- BOOK CONFIRM POPUP -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <h2>Confirm Booking 💈</h2>
+            <p>You are about to proceed to the booking page. Would you like to continue?</p>
+            <div class="popup-buttons">
+                <button class="cancel" onclick="closeBookingPopup()">Cancel</button>
+                <button class="continue" onclick="goToBooking()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT -->
+    <section id="contact" style="max-width:100%;">
+        <div class="contact-card scroll-animate">
+            <h2>Book an Appointment</h2>
+            <div class="contact-item">
+                <span class="icon">📍</span>
+                <p>Hlogwane St, Orlando,<br>Johannesburg 1803</p>
+            </div>
+            <div class="contact-item">
+                <span class="icon">📞</span>
+                <a href="tel:+27813921887">+27 81 392 1887</a>
+            </div>
+            <div class="contact-item">
+                <span class="icon">⏰</span>
+                <p>Mon – Sat | 9:00 – 18:00</p>
+            </div>
+            <a href="booking.html" id="bookLink" class="book-btn">Book Now ✦</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Exclusive Female Barber</h3>
+                <p><a href="tel:0698559615">📞 069 855 9615</a></p>
+                <p><a href="mailto:bookings@exclusivebarber.co.za">📧 bookings@exclusivebarber.co.za</a></p>
+                <p>📍 South Africa</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="booking.html">Book Appointment</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.5a1 1 0 10.001 2.001A1 1 0 0018.5 6.5z"/></svg>
+                    </a>
+                    <a href="#" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.6 9.9v-7h-2v-3h2V9.5c0-2 1.2-3.1 3-3.1.9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2V12h2.3l-.4 3h-1.9v7A10 10 0 0022 12z"/></svg>
+                    </a>
+                    <a href="#" aria-label="TikTok">
+                        <svg viewBox="0 0 24 24"><path d="M21 8.5c-1.8 0-3.5-.6-4.9-1.7v8.2a6 6 0 11-5-5.9v3a3 3 0 103 3V2h3a6 6 0 005 5.5v1z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Exclusive Female Barber. All Rights Reserved.</p>
+            <p><a href="#">Privacy Policy</a> | <a href="#">Terms &amp; Conditions</a></p>
+        </div>
+    </footer>
+
+    <script>
+        /* ── CUSTOM CURSOR ── */
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        document.querySelectorAll('a, button, .card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+        });
+
+        /* ── SCROLL ANIMATIONS ── */
+        const animEls = document.querySelectorAll('.scroll-animate');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('show'), i * 80);
+                }
+            });
+        }, {
+            threshold: 0.12
+        });
+        animEls.forEach(el => observer.observe(el));
+
+        /* ── BACK TO TOP ── */
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => {
+            scrollBtn.style.display = window.scrollY > 400 ? 'block' : 'none';
+        });
+        scrollBtn.addEventListener('click', () => window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        }));
+
+        /* ── BOOKING POPUP ── */
+        document.getElementById('bookLink').addEventListener('click', e => {
+            e.preventDefault();
+            document.getElementById('popup').classList.add('active');
+        });
+
+        function closeBookingPopup() {
+            document.getElementById('popup').classList.remove('active');
+        }
+
+        function goToBooking() {
+            window.location.href = 'booking.html';
+        }
+
+        /* ── CATALOGUE POPUP ── */
+        const catalogueData = {
+            classic: {
+                title: 'Classic Cut without dye',
+                price: 'R80',
+                desc: 'A timeless, clean cut designed to sharpen your look with precision and elegance.',
+                images: [
+                    'https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?w=400&q=80',
+                    'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=80'
+                ]
+            },
+            fade: {
+                title: 'Fade & Line-Up with dye',
+                price: 'R150',
+                desc: 'Modern fades blended to perfection, finished with crisp, razor-sharp edges.',
+                images: [
+                    'img9.jpeg',
+                    'imge 7.jpeg'
+                ]
+            },
+            design: {
+                title: 'Hair Design',
+                price: 'R180',
+                desc: 'Expressive, custom patterns and artistic designs cut directly into your style.',
+                images: [
+                    'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&q=80',
+                    'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&q=80'
+                ]
+            },
+            wash: {
+                title: 'Wash & Style',
+                price: 'R100',
+                desc: 'A deep cleanse and professional styling session that leaves your hair fresh and vibrant.',
+                images: [
+                    'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&q=80',
+                    'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80'
+                ]
+            }
+        };
+
+        function openCatalogue(type) {
+            const d = catalogueData[type];
+            document.getElementById('catalogueTitle').textContent = d.title;
+            document.getElementById('popupPrice').textContent = d.price;
+            document.getElementById('popupDesc').textContent = d.desc;
+
+            const imgContainer = document.getElementById('catalogueImages');
+            imgContainer.innerHTML = '';
+            d.images.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = d.title;
+                imgContainer.appendChild(img);
+            });
+
+            document.getElementById('cataloguePopup').classList.add('active');
+        }
+
+        function closeCatalogue() {
+            document.getElementById('cataloguePopup').classList.remove('active');
+        }
+
+        /* close popups on overlay click */
+        document.getElementById('cataloguePopup').addEventListener('click', function(e) {
+            if (e.target === this) closeCatalogue();
+        });
+        document.getElementById('popup').addEventListener('click', function(e) {
+            if (e.target === this) closeBookingPopup();
+        });
+    </script>
+    <style>
+        /* ── HAMBURGER BUTTON (hidden on desktop) ── */
+        
+        .mob-menu-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            z-index: 600;
+        }
+        
+        .mob-menu-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #c9922a;
+            border-radius: 2px;
+            transition: transform 0.35s ease, opacity 0.3s ease, width 0.3s ease;
+            transform-origin: center;
+        }
+        /* Animate into X when open */
+        
+        .mob-menu-btn.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        
+        .mob-menu-btn.open span:nth-child(2) {
+            opacity: 0;
+            width: 0;
+        }
+        
+        .mob-menu-btn.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+        /* ── MOBILE FULLSCREEN NAV DRAWER ── */
+        
+        .mob-nav {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.97);
+            backdrop-filter: blur(16px);
+            z-index: 550;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        
+        .mob-nav.open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        .mob-nav a {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            color: #e8e0d5;
+            text-decoration: none;
+            padding: 14px 0;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.25s;
+        }
+        
+        .mob-nav a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 8px;
+            width: 0;
+            height: 1px;
+            background: #c9922a;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        
+        .mob-nav a:hover,
+        .mob-nav a:active {
+            color: #c9922a;
+        }
+        
+        .mob-nav a:hover::after {
+            width: 80%;
+        }
+        /* Stagger each nav link in */
+        
+        .mob-nav a:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+        
+        .mob-nav a:nth-child(2) {
+            transition-delay: 0.10s;
+        }
+        
+        .mob-nav a:nth-child(3) {
+            transition-delay: 0.15s;
+        }
+        
+        .mob-nav a:nth-child(4) {
+            transition-delay: 0.20s;
+        }
+        
+        .mob-nav-divider {
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #c9922a, transparent);
+            margin: 10px 0;
+        }
+        
+        .mob-nav-cta {
+            margin-top: 20px;
+            padding: 14px 40px;
+            background: #c9922a;
+            color: #0d0d0d !important;
+            font-family: 'DM Sans', sans-serif !important;
+            font-size: 0.9rem !important;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 0 30px rgba(201, 146, 42, 0.4);
+            transition: background 0.3s, transform 0.2s !important;
+        }
+        
+        .mob-nav-cta:hover {
+            background: #f0c06a !important;
+            transform: scale(1.04) !important;
+        }
+        
+        .mob-nav-cta::after {
+            display: none !important;
+        }
+        /* ── BOTTOM NAV BAR (phone only) ── */
+        
+        .mob-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(13, 13, 13, 0.97);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(201, 146, 42, 0.15);
+            z-index: 500;
+            padding: 10px 0 env(safe-area-inset-bottom, 10px);
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .mob-bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+            min-width: 56px;
+        }
+        
+        .mob-bottom-nav a .bnav-icon {
+            font-size: 1.3rem;
+        }
+        
+        .mob-bottom-nav a.active,
+        .mob-bottom-nav a:hover {
+            color: #c9922a;
+        }
+        /* Active dot */
+        
+        .mob-bottom-nav a.active::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 4px;
+            background: #c9922a;
+            border-radius: 50%;
+            margin: 2px auto 0;
+        }
+        /* ── MOBILE-ONLY RESPONSIVE OVERRIDES ── */
+        
+        @media (max-width: 640px) {
+            /* Show hamburger, hide desktop nav */
+            .mob-menu-btn {
+                display: flex !important;
+            }
+            header nav {
+                display: none !important;
+            }
+            /* Show bottom nav bar */
+            .mob-bottom-nav {
+                display: flex;
+            }
+            /* Add padding so content isn't hidden behind bottom nav */
+            body {
+                padding-bottom: 72px;
+            }
+            /* Hero text smaller */
+            .hero h2,
+            .hero h1 {
+                font-size: clamp(1.8rem, 8vw, 2.8rem) !important;
+            }
+            /* About section stacks */
+            .about-container,
+            .story-grid {
+                grid-template-columns: 1fr !important;
+                gap: 30px !important;
+            }
+            /* Services 2-col grid */
+            .services-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+            }
+            .service-img {
+                height: 160px !important;
+            }
+            /* Gallery single col */
+            .gallery {
+                grid-template-columns: 1fr !important;
+                grid-template-rows: auto !important;
+            }
+            .gallery-item:first-child {
+                grid-row: auto !important;
+            }
+            .gallery-item {
+                height: 200px;
+            }
+            /* Features 2-col */
+            .features-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            /* Testimonials single col */
+            .testimonials-grid {
+                grid-template-columns: 1fr !important;
+            }
+            /* Booking page stacks */
+            .page {
+                grid-template-columns: 1fr !important;
+            }
+            .panel-left {
+                min-height: 260px !important;
+            }
+            .panel-left-content {
+                padding: 36px 24px !important;
+            }
+            .panel-left h1 {
+                font-size: 2rem !important;
+            }
+            .panel-right {
+                padding: 40px 24px !important;
+            }
+            .form-row {
+                grid-template-columns: 1fr !important;
+                gap: 0 !important;
+            }
+            /* Contact card full width */
+            .contact-card {
+                max-width: 100% !important;
+                margin: 0 16px;
+            }
+            /* Popup full screen */
+            .popup-box {
+                width: 94% !important;
+                padding: 26px 20px !important;
+                border-radius: 20px !important;
+            }
+            /* Footer stack */
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .social-icons {
+                justify-content: center;
+            }
+            /* Before/after stack */
+            .ba-container {
+                grid-template-columns: 1fr !important;
+            }
+            /* Scroll top btn clears bottom nav */
+            #scrollTopBtn {
+                bottom: 82px !important;
+            }
+            /* Hide custom cursor on touch */
+            #cursor {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        (function() {
+            /* ── 1. INJECT HAMBURGER BUTTON INTO HEADER ── */
+            const header = document.querySelector('header');
+            if (header) {
+                const btn = document.createElement('button');
+                btn.className = 'mob-menu-btn';
+                btn.setAttribute('aria-label', 'Open menu');
+                btn.innerHTML = '<span></span><span></span><span></span>';
+                header.appendChild(btn);
+            }
+
+            /* ── 2. INJECT FULLSCREEN NAV DRAWER ── */
+            const drawer = document.createElement('nav');
+            drawer.className = 'mob-nav';
+            // Build links — adjust hrefs if needed
+            drawer.innerHTML = `
+      <a href="index.html"   onclick="closeMobNav()">Home</a>
+      <div class="mob-nav-divider"></div>
+      <a href="about.html"   onclick="closeMobNav()">About</a>
+      <div class="mob-nav-divider"></div>
+      <a href="index.html#services" onclick="closeMobNav()">Services</a>
+      <div class="mob-nav-divider"></div>
+      <a href="index.html#contact"  onclick="closeMobNav()">Contact</a>
+      <a href="booking.html" class="mob-nav-cta">Book Now ✦</a>
+    `;
+            document.body.appendChild(drawer);
+
+            /* ── 3. INJECT BOTTOM NAV BAR ── */
+            const bnav = document.createElement('div');
+            bnav.className = 'mob-bottom-nav';
+            bnav.innerHTML = `
+      <a href="index.html"><span class="bnav-icon">🏠</span>Home</a>
+      <a href="about.html"><span class="bnav-icon">✨</span>About</a>
+      <a href="index.html#services"><span class="bnav-icon">✂️</span>Services</a>
+      <a href="booking.html"><span class="bnav-icon">📅</span>Book</a>
+      <a href="index.html#contact"><span class="bnav-icon">📞</span>Contact</a>
+    `;
+            document.body.appendChild(bnav);
+
+            /* ── 4. HAMBURGER TOGGLE ── */
+            const menuBtn = document.querySelector('.mob-menu-btn');
+
+            function openMobNav() {
+                drawer.classList.add('open');
+                menuBtn.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+            window.closeMobNav = function() {
+                drawer.classList.remove('open');
+                menuBtn.classList.remove('open');
+                document.body.style.overflow = '';
+            };
+            menuBtn.addEventListener('click', () => {
+                drawer.classList.contains('open') ? closeMobNav() : openMobNav();
+            });
+            // Close on outside tap
+            drawer.addEventListener('click', (e) => {
+                if (e.target === drawer) closeMobNav();
+            });
+
+            /* ── 5. HIGHLIGHT ACTIVE BOTTOM NAV LINK ── */
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.mob-bottom-nav a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith(currentPage)) {
+                    link.classList.add('active');
+                }
+            });
+
+            /* ── 6. SWIPE DOWN TO CLOSE DRAWER ── */
+            let startY = 0;
+            drawer.addEventListener('touchstart', e => {
+                startY = e.touches[0].clientY;
+            }, {
+                passive: true
+            });
+            drawer.addEventListener('touchend', e => {
+                if (e.changedTouches[0].clientY - startY > 60) closeMobNav();
+            }, {
+                passive: true
+            });
+
+        })();
+    </script>
+</body>
+
+</html>
