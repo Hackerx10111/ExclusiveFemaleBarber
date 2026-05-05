@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
         :root {
             --gold: #c9922a;
             --gold-light: #f0c06a;
@@ -23,19 +23,19 @@
             --radius: 14px;
             --wa: #25D366;
         }
-
+ 
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-
+ 
         body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.35; }
-
+ 
         ::-webkit-scrollbar { width:6px; }
         ::-webkit-scrollbar-track { background:var(--black); }
         ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:3px; }
-
+ 
         #cursor { width:10px; height:10px; background:var(--gold); border-radius:50%; position:fixed; pointer-events:none; transform:translate(-50%,-50%); transition:width .2s,height .2s; z-index:10000; mix-blend-mode:difference; }
         #cursor.big { width:40px; height:40px; opacity:0.5; }
-
+ 
         header { background:rgba(13,13,13,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:500; padding:18px 40px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(201,146,42,0.2); animation:slideDown 0.6s ease forwards; }
         @keyframes slideDown { from{transform:translateY(-60px);opacity:0;} to{transform:translateY(0);opacity:1;} }
         .logo-text { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--gold); }
@@ -45,9 +45,9 @@
         nav a::after { content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--gold); transition:width .3s ease; }
         nav a:hover { color:var(--gold); }
         nav a:hover::after { width:100%; }
-
+ 
         .page { min-height:calc(100vh - 75px); display:grid; grid-template-columns:1fr 1fr; align-items:stretch; }
-
+ 
         /* LEFT PANEL */
         .panel-left { position:relative; overflow:hidden; min-height:500px; }
         .panel-left-bg { position:absolute; inset:0; background:url('imge 2.jpeg') center/cover no-repeat; filter:brightness(0.3); transform:scale(1.05); animation:heroZoom 8s ease forwards; }
@@ -63,18 +63,18 @@
         .info-text { font-size:0.88rem; color:rgba(255,255,255,0.6); line-height:1.5; }
         .info-text strong { color:var(--text); display:block; font-size:0.9rem; }
         .deco-line { width:60px; height:2px; background:linear-gradient(to right,var(--gold),transparent); margin:28px 0; }
-
+ 
         /* WhatsApp quick tap */
         .wa-quick { display:inline-flex; align-items:center; gap:10px; margin-top:24px; padding:13px 22px; background:rgba(37,211,102,0.1); border:1px solid rgba(37,211,102,0.35); border-radius:50px; color:var(--wa); text-decoration:none; font-size:0.85rem; font-weight:600; letter-spacing:0.5px; transition:background .3s,transform .2s; width:fit-content; }
         .wa-quick:hover { background:rgba(37,211,102,0.2); transform:translateY(-2px); }
         .wa-quick svg { width:18px; height:18px; fill:var(--wa); flex-shrink:0; }
-
+ 
         /* RIGHT PANEL */
         .panel-right { background:var(--dark); padding:60px 50px; display:flex; flex-direction:column; justify-content:center; animation:fadeUp 0.8s 0.4s ease both; }
         .form-header { margin-bottom:28px; }
         .form-header .section-label { font-size:0.7rem; letter-spacing:5px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
         .form-header h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,2.5vw,2.2rem); color:#fff; }
-
+ 
         /* SEND METHOD TOGGLE */
         .send-toggle { display:flex; gap:10px; margin-bottom:26px; }
         .toggle-btn { flex:1; padding:11px 10px; background:var(--input-bg); border:1px solid var(--border); border-radius:50px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:600; letter-spacing:0.5px; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:7px; }
@@ -84,7 +84,7 @@
         .toggle-btn svg { width:15px; height:15px; transition:fill .2s; }
         .toggle-btn.t-wa svg { fill:var(--wa); }
         .toggle-btn:not(.t-wa) svg { fill:var(--muted); }
-
+ 
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .form-group { margin-bottom:18px; }
         label { display:block; font-size:0.78rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
@@ -96,15 +96,15 @@
         select { padding-right:36px; cursor:pointer; }
         select option { background:#1a1a1a; color:var(--text); }
         textarea { resize:vertical; min-height:100px; }
-
+ 
         .style-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
         .chip { padding:8px 18px; border:1px solid var(--border); border-radius:30px; font-size:0.82rem; color:var(--muted); cursor:pointer; transition:all .2s; background:var(--input-bg); user-select:none; }
         .chip:hover { border-color:var(--gold); color:var(--gold); }
         .chip.active { background:var(--gold); border-color:var(--gold); color:var(--black); font-weight:600; }
         .chip-label { font-size:0.78rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
-
+ 
         .form-divider { width:100%; height:1px; background:var(--border); margin:20px 0; }
-
+ 
         /* SUBMIT BUTTONS */
         .submit-btn { width:100%; padding:16px; border:none; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:9px; transition:background .3s,transform .2s,box-shadow .3s; }
         .submit-btn:hover { transform:translateY(-2px); }
@@ -118,17 +118,17 @@
         #waBtn svg { fill:#fff; }
         .btn-spinner { display:none; width:18px; height:18px; border:2px solid rgba(0,0,0,0.3); border-top-color:var(--black); border-radius:50%; animation:spin .7s linear infinite; }
         @keyframes spin { to{transform:rotate(360deg);} }
-
+ 
         /* TOAST */
         .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); z-index:9000; display:flex; align-items:center; gap:12px; background:#1a1a1a; border:1px solid rgba(201,146,42,0.4); border-radius:50px; padding:14px 24px; font-size:0.9rem; color:var(--text); box-shadow:0 8px 40px rgba(0,0,0,0.5); transition:transform .4s cubic-bezier(0.34,1.56,0.64,1),opacity .4s; opacity:0; pointer-events:none; white-space:nowrap; }
         .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
         .toast.t-error { border-color:rgba(220,60,60,0.4); }
         .toast.t-wa { border-color:rgba(37,211,102,0.4); }
-
+ 
         /* MODAL */
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:8000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .4s ease; padding:20px; }
         .modal-overlay.open { opacity:1; pointer-events:all; }
-
+ 
         /* BOOKING SLIP */
         .slip { background:#0f0f0f; border:1px solid rgba(201,146,42,0.3); border-radius:24px; width:100%; max-width:520px; transform:scale(0.88) translateY(30px); transition:transform .45s cubic-bezier(0.34,1.4,0.64,1); overflow:hidden; position:relative; }
         .modal-overlay.open .slip { transform:scale(1) translateY(0); }
@@ -169,14 +169,14 @@
         .slip-btn-close:hover { border-color:var(--gold); color:var(--gold); }
         .confetti-dot { position:absolute; border-radius:50%; pointer-events:none; animation:confettiFall 1.4s ease-out forwards; }
         @keyframes confettiFall { 0%{opacity:1;transform:translateY(0) rotate(0deg);} 100%{opacity:0;transform:translateY(60px) rotate(360deg);} }
-
+ 
         .site-footer { background:#090909; border-top:1px solid rgba(201,146,42,0.15); padding:40px 40px 20px; }
         .footer-bottom { text-align:center; font-size:0.8rem; color:#444; }
         .footer-bottom a { color:#555; text-decoration:none; }
         .footer-bottom a:hover { color:var(--gold); }
-
+ 
         @keyframes fadeUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
-
+ 
         /* MOBILE NAV */
         .mob-menu-btn { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px; z-index:600; }
         .mob-menu-btn span { display:block; width:24px; height:2px; background:#c9922a; border-radius:2px; transition:transform .35s ease,opacity .3s ease,width .3s ease; transform-origin:center; }
@@ -197,7 +197,7 @@
         .mob-bottom-nav a .bnav-icon { font-size:1.3rem; }
         .mob-bottom-nav a.active,.mob-bottom-nav a:hover { color:#c9922a; }
         .mob-bottom-nav a.active::after { content:''; display:block; width:4px; height:4px; background:#c9922a; border-radius:50%; margin:2px auto 0; }
-
+ 
         @media (max-width: 860px) {
             .page { grid-template-columns:1fr; }
             .panel-left { min-height:360px; }
@@ -228,15 +228,15 @@
     </style>
 </head>
 <body>
-
+ 
 <div id="cursor"></div>
-
+ 
 <!-- TOAST -->
 <div class="toast" id="toast">
     <span id="toastIcon">✅</span>
     <span id="toastMsg">Done!</span>
 </div>
-
+ 
 <!-- BOOKING SLIP MODAL -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="slip" id="bookingSlip">
@@ -277,7 +277,7 @@
         </div>
     </div>
 </div>
-
+ 
 <!-- HEADER -->
 <header>
     <div>
@@ -290,9 +290,9 @@
         <a href="index.html#services">Services</a>
     </nav>
 </header>
-
+ 
 <div class="page">
-
+ 
     <!-- LEFT PANEL -->
     <div class="panel-left">
         <div class="panel-left-bg"></div>
@@ -325,14 +325,14 @@
             </a>
         </div>
     </div>
-
+ 
     <!-- RIGHT PANEL -->
     <div class="panel-right">
         <div class="form-header">
             <p class="section-label">Make a Booking</p>
             <h2>Your Details</h2>
         </div>
-
+ 
         <!-- SEND METHOD TOGGLE -->
         <div class="send-toggle">
             <button type="button" class="toggle-btn t-email" id="toggleEmail" onclick="setSendMethod('email')">
@@ -343,7 +343,7 @@
                 Send via WhatsApp
             </button>
         </div>
-
+ 
         <form id="bookingForm" onsubmit="handleSubmit(event)">
             <div class="form-row">
                 <div class="form-group">
@@ -369,9 +369,9 @@
                     <input type="time" id="time" name="Time" required />
                 </div>
             </div>
-
+ 
             <div class="form-divider"></div>
-
+ 
             <span class="chip-label">Style Wanted</span>
             <div class="style-chips">
                 <div class="chip" data-value="Classic Cut">Classic Cut</div>
@@ -381,18 +381,18 @@
                 <div class="chip" data-value="Other">Other</div>
             </div>
             <input type="hidden" id="styleInput" name="Style" />
-
+ 
             <div class="form-group">
                 <label for="notes">Additional Notes</label>
                 <textarea id="notes" name="Notes" placeholder="Describe the hairstyle you want, any references, or special requests..."></textarea>
             </div>
-
+ 
             <!-- EMAIL BUTTON -->
             <button type="submit" class="submit-btn" id="emailBtn">
                 <span id="btnText">📧 Send Booking via Email</span>
                 <div class="btn-spinner" id="btnSpinner"></div>
             </button>
-
+ 
             <!-- WHATSAPP BUTTON -->
             <button type="submit" class="submit-btn" id="waBtn">
                 <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -401,26 +401,26 @@
         </form>
     </div>
 </div>
-
+ 
 <footer class="site-footer">
     <div class="footer-bottom">
         <p>&copy; 2026 Exclusive Female Barber. All Rights Reserved. |
             <a href="#">Privacy Policy</a> | <a href="#">Terms &amp; Conditions</a></p>
     </div>
 </footer>
-
+ 
 <script>
 /* ── CONFIG ── */
 const EMAILJS_PUBLIC_KEY  = 'urJTuKO3Wve4v3mLT';
 const EMAILJS_SERVICE_ID  = 'service_g34fs8e';
 const EMAILJS_TEMPLATE_ID = 'template_6iqi0m6';
 const WA_NUMBER           = '27813921887'; // +27 81 392 1887
-
+ 
 emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
+ 
 /* ── SEND METHOD ── */
 let sendMethod = 'email';
-
+ 
 function setSendMethod(method) {
     sendMethod = method;
     const eBtn = document.getElementById('emailBtn');
@@ -437,7 +437,7 @@ function setSendMethod(method) {
         document.getElementById('email').required = false;
     }
 }
-
+ 
 /* ── CURSOR ── */
 const cursor = document.getElementById('cursor');
 document.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
@@ -445,7 +445,7 @@ document.querySelectorAll('a,button,.chip,input,select,textarea').forEach(el => 
     el.addEventListener('mouseenter', () => cursor.classList.add('big'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
 });
-
+ 
 /* ── CHIPS ── */
 document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -454,10 +454,10 @@ document.querySelectorAll('.chip').forEach(chip => {
         document.getElementById('styleInput').value = chip.dataset.value;
     });
 });
-
+ 
 /* ── MIN DATE ── */
 document.getElementById('date').min = new Date().toISOString().split('T')[0];
-
+ 
 /* ── TOAST ── */
 function showToast(msg, type = '') {
     const t = document.getElementById('toast');
@@ -467,7 +467,7 @@ function showToast(msg, type = '') {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 4500);
 }
-
+ 
 /* ── UTILS ── */
 function genRef() { return 'EFB-' + Math.random().toString(36).substring(2,8).toUpperCase(); }
 function fmtDate(v) {
@@ -479,12 +479,12 @@ function fmtTime(v) {
     const [h,m] = v.split(':'); const hr = parseInt(h);
     return `${hr>12?hr-12:hr||12}:${m} ${hr>=12?'PM':'AM'}`;
 }
-
+ 
 /* ── MODAL ── */
 function openModal()  { document.getElementById('modalOverlay').classList.add('open'); }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target.id === 'modalOverlay') closeModal(); });
-
+ 
 /* ── CONFETTI ── */
 function spawnConfetti() {
     const slip = document.getElementById('bookingSlip');
@@ -497,7 +497,7 @@ function spawnConfetti() {
         }
     });
 }
-
+ 
 /* ── POPULATE SLIP ── */
 let _data = {};
 function populateSlip(data, ref, method) {
@@ -514,7 +514,7 @@ function populateSlip(data, ref, method) {
     via.textContent = method === 'whatsapp' ? '💬 Sent via WhatsApp' : '📧 Sent via Email';
     via.className   = method === 'whatsapp' ? 'slip-via via-wa' : 'slip-via via-email';
 }
-
+ 
 /* ── WHATSAPP MESSAGE BUILDER ── */
 function buildWaMsg(data, ref) {
     return `Hi! I'd like to book an appointment 💈%0A%0A` +
@@ -527,12 +527,12 @@ function buildWaMsg(data, ref) {
         `*Notes:* ${data.notes || 'None'}%0A` +
         `*Ref:* ${ref}`;
 }
-
+ 
 /* Slip WA button */
 function sendViaWhatsApp() {
     window.open(`https://wa.me/${WA_NUMBER}?text=${buildWaMsg(_data, document.getElementById('slipRef').textContent)}`, '_blank');
 }
-
+ 
 /* ── PRINT SLIP ── */
 function printSlip() {
     const slip = document.getElementById('bookingSlip').outerHTML;
@@ -545,14 +545,14 @@ function printSlip() {
     <body>${slip}<script>window.onload=()=>window.print()<\/script></body></html>`);
     w.document.close();
 }
-
+ 
 /* ── RESET ── */
 function resetForm() {
     document.getElementById('bookingForm').reset();
     document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
     document.getElementById('styleInput').value='';
 }
-
+ 
 /* ── MAIN SUBMIT ── */
 async function handleSubmit(e) {
     e.preventDefault();
@@ -566,7 +566,7 @@ async function handleSubmit(e) {
         notes: document.getElementById('notes').value.trim() || 'None',
     };
     const ref = genRef();
-
+ 
     /* WHATSAPP */
     if (sendMethod === 'whatsapp') {
         window.open(`https://wa.me/${WA_NUMBER}?text=${buildWaMsg(data,ref)}`, '_blank');
@@ -574,13 +574,13 @@ async function handleSubmit(e) {
         setTimeout(() => { populateSlip(data,ref,'whatsapp'); openModal(); spawnConfetti(); resetForm(); }, 600);
         return;
     }
-
+ 
     /* EMAIL */
     const btn = document.getElementById('emailBtn');
     const txt = document.getElementById('btnText');
     const spn = document.getElementById('btnSpinner');
     btn.disabled=true; txt.style.display='none'; spn.style.display='block';
-
+ 
     try {
         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
             to_name:'Salon Owner', from_name:data.name, from_email:data.email,
@@ -598,7 +598,7 @@ async function handleSubmit(e) {
     }
 }
 </script>
-
+ 
 <script>
 /* ── MOBILE NAV ── */
 (function(){
