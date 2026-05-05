@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Appointment | Exclusive Female Barber</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-    <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,37 +21,25 @@
             --input-bg: #111;
             --border: rgba(255,255,255,0.08);
             --radius: 14px;
+            --wa: #25D366;
         }
 
         html { scroll-behavior: smooth; }
         body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-        body::before {
-            content: '';
-            position: fixed; inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none; z-index: 9999; opacity: 0.35;
-        }
+        body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.35; }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--black); }
-        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--black); }
+        ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:3px; }
 
         #cursor { width:10px; height:10px; background:var(--gold); border-radius:50%; position:fixed; pointer-events:none; transform:translate(-50%,-50%); transition:width .2s,height .2s; z-index:10000; mix-blend-mode:difference; }
         #cursor.big { width:40px; height:40px; opacity:0.5; }
 
-        header {
-            background: rgba(13,13,13,0.95); backdrop-filter: blur(12px);
-            position: sticky; top: 0; z-index: 500;
-            padding: 18px 40px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid rgba(201,146,42,0.2);
-            animation: slideDown 0.6s ease forwards;
-        }
-        @keyframes slideDown { from { transform:translateY(-60px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-
+        header { background:rgba(13,13,13,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:500; padding:18px 40px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(201,146,42,0.2); animation:slideDown 0.6s ease forwards; }
+        @keyframes slideDown { from{transform:translateY(-60px);opacity:0;} to{transform:translateY(0);opacity:1;} }
         .logo-text { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--gold); }
         .logo-sub { font-size:0.7rem; color:var(--muted); letter-spacing:3px; text-transform:uppercase; }
-
         nav { display:flex; gap:30px; }
         nav a { color:var(--text); text-decoration:none; font-size:0.9rem; letter-spacing:1px; text-transform:uppercase; position:relative; transition:color .3s; }
         nav a::after { content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--gold); transition:width .3s ease; }
@@ -61,30 +48,42 @@
 
         .page { min-height:calc(100vh - 75px); display:grid; grid-template-columns:1fr 1fr; align-items:stretch; }
 
+        /* LEFT PANEL */
         .panel-left { position:relative; overflow:hidden; min-height:500px; }
         .panel-left-bg { position:absolute; inset:0; background:url('imge 2.jpeg') center/cover no-repeat; filter:brightness(0.3); transform:scale(1.05); animation:heroZoom 8s ease forwards; }
-        @keyframes heroZoom { from { transform:scale(1.05); } to { transform:scale(1); } }
-
+        @keyframes heroZoom { from{transform:scale(1.05);} to{transform:scale(1);} }
         .panel-left-content { position:relative; z-index:2; padding:70px 50px; display:flex; flex-direction:column; justify-content:center; height:100%; animation:fadeUp 0.8s 0.2s ease both; }
-
         .panel-tag { display:inline-block; font-size:0.7rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); border:1px solid var(--gold); padding:5px 16px; border-radius:30px; margin-bottom:24px; width:fit-content; }
         .panel-left h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,3.2rem); line-height:1.15; color:#fff; margin-bottom:20px; }
         .panel-left h1 em { color:var(--gold); font-style:normal; }
-        .panel-left p { color:rgba(255,255,255,0.5); font-size:0.95rem; line-height:1.8; margin-bottom:40px; }
-
+        .panel-left > .panel-left-content > p { color:rgba(255,255,255,0.5); font-size:0.95rem; line-height:1.8; margin-bottom:40px; }
         .info-items { display:flex; flex-direction:column; gap:16px; }
         .info-item { display:flex; align-items:center; gap:14px; }
         .info-icon { width:40px; height:40px; flex-shrink:0; background:rgba(201,146,42,0.12); border:1px solid rgba(201,146,42,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; }
         .info-text { font-size:0.88rem; color:rgba(255,255,255,0.6); line-height:1.5; }
         .info-text strong { color:var(--text); display:block; font-size:0.9rem; }
-
         .deco-line { width:60px; height:2px; background:linear-gradient(to right,var(--gold),transparent); margin:28px 0; }
 
-        .panel-right { background:var(--dark); padding:60px 50px; display:flex; flex-direction:column; justify-content:center; animation:fadeUp 0.8s 0.4s ease both; }
+        /* WhatsApp quick tap */
+        .wa-quick { display:inline-flex; align-items:center; gap:10px; margin-top:24px; padding:13px 22px; background:rgba(37,211,102,0.1); border:1px solid rgba(37,211,102,0.35); border-radius:50px; color:var(--wa); text-decoration:none; font-size:0.85rem; font-weight:600; letter-spacing:0.5px; transition:background .3s,transform .2s; width:fit-content; }
+        .wa-quick:hover { background:rgba(37,211,102,0.2); transform:translateY(-2px); }
+        .wa-quick svg { width:18px; height:18px; fill:var(--wa); flex-shrink:0; }
 
-        .form-header { margin-bottom:36px; }
+        /* RIGHT PANEL */
+        .panel-right { background:var(--dark); padding:60px 50px; display:flex; flex-direction:column; justify-content:center; animation:fadeUp 0.8s 0.4s ease both; }
+        .form-header { margin-bottom:28px; }
         .form-header .section-label { font-size:0.7rem; letter-spacing:5px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
         .form-header h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,2.5vw,2.2rem); color:#fff; }
+
+        /* SEND METHOD TOGGLE */
+        .send-toggle { display:flex; gap:10px; margin-bottom:26px; }
+        .toggle-btn { flex:1; padding:11px 10px; background:var(--input-bg); border:1px solid var(--border); border-radius:50px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:600; letter-spacing:0.5px; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:7px; }
+        .toggle-btn:hover { border-color:var(--gold); color:var(--text); }
+        .toggle-btn.t-email { background:rgba(201,146,42,0.12); border-color:var(--gold); color:var(--gold); }
+        .toggle-btn.t-wa { background:rgba(37,211,102,0.1); border-color:var(--wa); color:var(--wa); }
+        .toggle-btn svg { width:15px; height:15px; transition:fill .2s; }
+        .toggle-btn.t-wa svg { fill:var(--wa); }
+        .toggle-btn:not(.t-wa) svg { fill:var(--muted); }
 
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .form-group { margin-bottom:18px; }
@@ -92,13 +91,11 @@
         input, select, textarea { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:13px 16px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.92rem; transition:border-color .3s,box-shadow .3s; outline:none; appearance:none; }
         input::placeholder, textarea::placeholder { color:#444; }
         input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,146,42,0.12); }
-        input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator { filter:invert(0.5) sepia(1) saturate(3) hue-rotate(5deg); cursor:pointer; }
-
-        .select-wrap { position:relative; }
-        .select-wrap::after { content:'▾'; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--gold); pointer-events:none; font-size:0.9rem; }
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator { filter:invert(0.5) sepia(1) saturate(3) hue-rotate(5deg); cursor:pointer; }
         select { padding-right:36px; cursor:pointer; }
         select option { background:#1a1a1a; color:var(--text); }
-        textarea { resize:vertical; min-height:110px; }
+        textarea { resize:vertical; min-height:100px; }
 
         .style-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
         .chip { padding:8px 18px; border:1px solid var(--border); border-radius:30px; font-size:0.82rem; color:var(--muted); cursor:pointer; transition:all .2s; background:var(--input-bg); user-select:none; }
@@ -106,189 +103,104 @@
         .chip.active { background:var(--gold); border-color:var(--gold); color:var(--black); font-weight:600; }
         .chip-label { font-size:0.78rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
 
-        .submit-btn {
-            width:100%; padding:16px;
-            background:var(--gold); color:var(--black); border:none; border-radius:50px;
-            font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:700;
-            letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; margin-top:8px;
-            box-shadow:0 0 30px rgba(201,146,42,0.35);
-            transition:background .3s,transform .2s,box-shadow .3s;
-            position: relative;
-        }
-        .submit-btn:hover { background:var(--gold-light); transform:translateY(-2px); box-shadow:0 0 50px rgba(201,146,42,0.5); }
+        .form-divider { width:100%; height:1px; background:var(--border); margin:20px 0; }
+
+        /* SUBMIT BUTTONS */
+        .submit-btn { width:100%; padding:16px; border:none; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:9px; transition:background .3s,transform .2s,box-shadow .3s; }
+        .submit-btn:hover { transform:translateY(-2px); }
         .submit-btn:active { transform:translateY(0); }
-        .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none !important; }
+        .submit-btn svg { width:20px; height:20px; }
+        #emailBtn { background:var(--gold); color:var(--black); box-shadow:0 0 30px rgba(201,146,42,0.35); }
+        #emailBtn:hover { background:var(--gold-light); box-shadow:0 0 50px rgba(201,146,42,0.5); }
+        #waBtn { background:var(--wa); color:#fff; box-shadow:0 0 30px rgba(37,211,102,0.25); display:none; }
+        #waBtn:hover { background:#1fbd59; box-shadow:0 0 50px rgba(37,211,102,0.4); }
+        #waBtn svg { fill:#fff; }
+        .btn-spinner { display:none; width:18px; height:18px; border:2px solid rgba(0,0,0,0.3); border-top-color:var(--black); border-radius:50%; animation:spin .7s linear infinite; }
+        @keyframes spin { to{transform:rotate(360deg);} }
 
-        .btn-spinner {
-            display: none;
-            width: 18px; height: 18px;
-            border: 2px solid rgba(0,0,0,0.3);
-            border-top-color: var(--black);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin { to { transform:rotate(360deg); } }
+        /* TOAST */
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); z-index:9000; display:flex; align-items:center; gap:12px; background:#1a1a1a; border:1px solid rgba(201,146,42,0.4); border-radius:50px; padding:14px 24px; font-size:0.9rem; color:var(--text); box-shadow:0 8px 40px rgba(0,0,0,0.5); transition:transform .4s cubic-bezier(0.34,1.56,0.64,1),opacity .4s; opacity:0; pointer-events:none; white-space:nowrap; }
+        .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+        .toast.t-error { border-color:rgba(220,60,60,0.4); }
+        .toast.t-wa { border-color:rgba(37,211,102,0.4); }
 
-        .form-divider { width:100%; height:1px; background:var(--border); margin:24px 0; }
+        /* MODAL */
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:8000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .4s ease; padding:20px; }
+        .modal-overlay.open { opacity:1; pointer-events:all; }
 
-        /* ── TOAST NOTIFICATION ── */
-        .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
-            z-index: 9000;
-            display: flex; align-items: center; gap: 12px;
-            background: #1a1a1a; border: 1px solid rgba(201,146,42,0.4);
-            border-radius: 50px; padding: 14px 24px;
-            font-size: 0.9rem; color: var(--text);
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
-            opacity: 0; pointer-events: none; white-space: nowrap;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast-icon { font-size: 1.2rem; }
-        .toast.error { border-color: rgba(220,60,60,0.4); }
-
-        /* ── OVERLAY BACKDROP ── */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-            z-index: 8000;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease;
-            padding: 20px;
-        }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-        /* ── BOOKING SLIP ── */
-        .slip {
-            background: #0f0f0f;
-            border: 1px solid rgba(201,146,42,0.3);
-            border-radius: 24px;
-            width: 100%; max-width: 520px;
-            transform: scale(0.88) translateY(30px);
-            transition: transform 0.45s cubic-bezier(0.34,1.4,0.64,1);
-            overflow: hidden;
-            position: relative;
-        }
-        .modal-overlay.open .slip { transform: scale(1) translateY(0); }
-
-        .slip-header {
-            background: linear-gradient(135deg, #1a1200, #2a1800);
-            border-bottom: 1px solid rgba(201,146,42,0.25);
-            padding: 36px 36px 28px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .slip-header::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 50% 0%, rgba(201,146,42,0.18) 0%, transparent 70%);
-        }
-        .slip-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem; color: var(--gold);
-            letter-spacing: 1px; position: relative; z-index: 1;
-        }
+        /* BOOKING SLIP */
+        .slip { background:#0f0f0f; border:1px solid rgba(201,146,42,0.3); border-radius:24px; width:100%; max-width:520px; transform:scale(0.88) translateY(30px); transition:transform .45s cubic-bezier(0.34,1.4,0.64,1); overflow:hidden; position:relative; }
+        .modal-overlay.open .slip { transform:scale(1) translateY(0); }
+        .slip-header { background:linear-gradient(135deg,#1a1200,#2a1800); border-bottom:1px solid rgba(201,146,42,0.25); padding:36px 36px 28px; text-align:center; position:relative; overflow:hidden; }
+        .slip-header::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(201,146,42,0.18) 0%,transparent 70%); }
+        .slip-logo { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--gold); letter-spacing:1px; position:relative; z-index:1; }
         .slip-logo small { display:block; font-family:'DM Sans',sans-serif; font-size:0.65rem; letter-spacing:4px; color:var(--muted); text-transform:uppercase; margin-top:3px; }
-        .slip-check {
-            width: 64px; height: 64px;
-            background: rgba(201,146,42,0.15);
-            border: 2px solid var(--gold);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem;
-            margin: 18px auto 12px;
-            position: relative; z-index: 1;
-            animation: popIn 0.5s 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
-        }
-        @keyframes popIn { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
-
-        .slip-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem; color: #fff;
-            position: relative; z-index: 1; margin-bottom: 4px;
-        }
-        .slip-subtitle { font-size: 0.82rem; color: var(--muted); position: relative; z-index: 1; }
-
-        /* Jagged ticket tear */
-        .slip-tear {
-            width: 100%; height: 20px;
-            background: #0f0f0f;
-            position: relative;
-        }
-        .slip-tear::before {
-            content: '';
-            position: absolute; top: -10px; left: 0; right: 0; height: 20px;
-            background: radial-gradient(circle at 0% 0%, #0f0f0f 8px, transparent 8px) 0 0 / 16px 20px,
-                        radial-gradient(circle at 100% 0%, #0f0f0f 8px, transparent 8px) 16px 0 / 16px 20px;
-            background-repeat: repeat-x;
-        }
-
-        .slip-body { padding: 28px 36px; }
-
-        /* Reference number */
-        .slip-ref {
-            text-align: center;
-            background: rgba(201,146,42,0.07);
-            border: 1px dashed rgba(201,146,42,0.3);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 24px;
-        }
-        .slip-ref-label { font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-        .slip-ref-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold); letter-spacing: 3px; }
-
-        .slip-rows { display: flex; flex-direction: column; gap: 0; }
-        .slip-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .slip-row:last-child { border-bottom: none; }
-        .slip-row-label { font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
-        .slip-row-value { font-size: 0.92rem; color: var(--text); text-align: right; font-weight: 500; max-width: 60%; }
-        .slip-row-value.gold { color: var(--gold); font-weight: 700; }
-
-        .slip-footer {
-            padding: 0 36px 28px;
-            text-align: center;
-        }
-        .slip-note { font-size: 0.78rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
-
-        .slip-actions { display: flex; gap: 10px; }
-        .slip-btn {
-            flex: 1; padding: 13px; border-radius: 50px;
-            font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
-            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-            cursor: pointer; border: none; transition: all 0.25s;
-        }
-        .slip-btn-primary { background: var(--gold); color: var(--black); box-shadow: 0 0 24px rgba(201,146,42,0.3); }
-        .slip-btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
-        .slip-btn-secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-        .slip-btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
-
-        /* Confetti dots */
-        .confetti-dot {
-            position: absolute; border-radius: 50%; pointer-events: none;
-            animation: confettiFall 1.4s ease-out forwards;
-        }
-        @keyframes confettiFall {
-            0%   { opacity:1; transform:translateY(0) rotate(0deg); }
-            100% { opacity:0; transform:translateY(60px) rotate(360deg); }
-        }
+        .slip-check { width:64px; height:64px; background:rgba(201,146,42,0.15); border:2px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; margin:18px auto 12px; position:relative; z-index:1; animation:popIn .5s .3s cubic-bezier(0.34,1.56,0.64,1) both; }
+        @keyframes popIn { from{transform:scale(0);opacity:0;} to{transform:scale(1);opacity:1;} }
+        .slip-title { font-family:'Playfair Display',serif; font-size:1.5rem; color:#fff; position:relative; z-index:1; margin-bottom:4px; }
+        .slip-subtitle { font-size:0.82rem; color:var(--muted); position:relative; z-index:1; }
+        .slip-via { position:relative; z-index:1; display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:5px 14px; border-radius:30px; font-size:0.72rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+        .slip-via.via-email { background:rgba(201,146,42,0.15); color:var(--gold); border:1px solid rgba(201,146,42,0.3); }
+        .slip-via.via-wa { background:rgba(37,211,102,0.12); color:var(--wa); border:1px solid rgba(37,211,102,0.3); }
+        .slip-tear { width:100%; height:20px; background:#0f0f0f; position:relative; }
+        .slip-tear::before { content:''; position:absolute; top:-10px; left:0; right:0; height:20px; background:radial-gradient(circle at 0% 0%,#0f0f0f 8px,transparent 8px) 0 0/16px 20px,radial-gradient(circle at 100% 0%,#0f0f0f 8px,transparent 8px) 16px 0/16px 20px; background-repeat:repeat-x; }
+        .slip-body { padding:28px 36px; }
+        .slip-ref { text-align:center; background:rgba(201,146,42,0.07); border:1px dashed rgba(201,146,42,0.3); border-radius:12px; padding:14px; margin-bottom:24px; }
+        .slip-ref-label { font-size:0.65rem; letter-spacing:4px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+        .slip-ref-num { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--gold); letter-spacing:3px; }
+        .slip-rows { display:flex; flex-direction:column; }
+        .slip-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+        .slip-row:last-child { border-bottom:none; }
+        .slip-row-label { font-size:0.75rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+        .slip-row-value { font-size:0.92rem; color:var(--text); text-align:right; font-weight:500; max-width:60%; }
+        .slip-row-value.gold { color:var(--gold); font-weight:700; }
+        .slip-footer { padding:0 36px 28px; text-align:center; }
+        .slip-note { font-size:0.78rem; color:var(--muted); line-height:1.6; margin-bottom:20px; }
+        .slip-actions { display:flex; gap:10px; }
+        .slip-btn { flex:1; padding:13px; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .slip-btn svg { width:15px; height:15px; }
+        .slip-btn-print { background:var(--gold); color:var(--black); }
+        .slip-btn-print:hover { background:var(--gold-light); transform:translateY(-1px); }
+        .slip-btn-wa { background:var(--wa); color:#fff; }
+        .slip-btn-wa:hover { background:#1fbd59; transform:translateY(-1px); }
+        .slip-btn-wa svg { fill:#fff; }
+        .slip-btn-close { background:transparent; color:var(--muted); border:1px solid var(--border); }
+        .slip-btn-close:hover { border-color:var(--gold); color:var(--gold); }
+        .confetti-dot { position:absolute; border-radius:50%; pointer-events:none; animation:confettiFall 1.4s ease-out forwards; }
+        @keyframes confettiFall { 0%{opacity:1;transform:translateY(0) rotate(0deg);} 100%{opacity:0;transform:translateY(60px) rotate(360deg);} }
 
         .site-footer { background:#090909; border-top:1px solid rgba(201,146,42,0.15); padding:40px 40px 20px; }
         .footer-bottom { text-align:center; font-size:0.8rem; color:#444; }
         .footer-bottom a { color:#555; text-decoration:none; }
         .footer-bottom a:hover { color:var(--gold); }
 
-        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+
+        /* MOBILE NAV */
+        .mob-menu-btn { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px; z-index:600; }
+        .mob-menu-btn span { display:block; width:24px; height:2px; background:#c9922a; border-radius:2px; transition:transform .35s ease,opacity .3s ease,width .3s ease; transform-origin:center; }
+        .mob-menu-btn.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+        .mob-menu-btn.open span:nth-child(2) { opacity:0; width:0; }
+        .mob-menu-btn.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+        .mob-nav { position:fixed; inset:0; background:rgba(10,10,10,0.97); backdrop-filter:blur(16px); z-index:550; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; opacity:0; transform:translateY(-20px); transition:opacity .35s ease,transform .35s ease; }
+        .mob-nav.open { opacity:1; transform:translateY(0); pointer-events:all; }
+        .mob-nav a { font-family:'Playfair Display',serif; font-size:2.4rem; color:#e8e0d5; text-decoration:none; padding:14px 0; position:relative; transition:color .25s; }
+        .mob-nav a::after { content:''; position:absolute; left:50%; bottom:8px; width:0; height:1px; background:#c9922a; transform:translateX(-50%); transition:width .3s ease; }
+        .mob-nav a:hover,.mob-nav a:active { color:#c9922a; }
+        .mob-nav a:hover::after { width:80%; }
+        .mob-nav-divider { width:40px; height:1px; background:linear-gradient(to right,transparent,#c9922a,transparent); margin:10px 0; }
+        .mob-nav-cta { margin-top:20px; padding:14px 40px; background:#c9922a; color:#0d0d0d !important; font-family:'DM Sans',sans-serif !important; font-size:0.9rem !important; font-weight:700; letter-spacing:2px; text-transform:uppercase; border-radius:50px; text-decoration:none; }
+        .mob-nav-cta::after { display:none !important; }
+        .mob-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:rgba(13,13,13,0.97); backdrop-filter:blur(12px); border-top:1px solid rgba(201,146,42,0.15); z-index:500; padding:10px 0 env(safe-area-inset-bottom,10px); justify-content:space-around; align-items:center; }
+        .mob-bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:4px; text-decoration:none; color:#666; font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; min-width:56px; }
+        .mob-bottom-nav a .bnav-icon { font-size:1.3rem; }
+        .mob-bottom-nav a.active,.mob-bottom-nav a:hover { color:#c9922a; }
+        .mob-bottom-nav a.active::after { content:''; display:block; width:4px; height:4px; background:#c9922a; border-radius:50%; margin:2px auto 0; }
 
         @media (max-width: 860px) {
             .page { grid-template-columns:1fr; }
-            .panel-left { min-height:380px; }
+            .panel-left { min-height:360px; }
             .panel-left-content { padding:50px 30px; }
             .panel-right { padding:50px 30px; }
             .form-row { grid-template-columns:1fr; gap:0; }
@@ -299,42 +211,18 @@
             .slip-footer { padding:0 24px 24px; }
             .slip-actions { flex-direction:column; }
         }
-
-        /* ── HAMBURGER BUTTON ── */
-        .mob-menu-btn { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px; z-index:600; }
-        .mob-menu-btn span { display:block; width:24px; height:2px; background:#c9922a; border-radius:2px; transition:transform .35s ease,opacity .3s ease,width .3s ease; transform-origin:center; }
-        .mob-menu-btn.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
-        .mob-menu-btn.open span:nth-child(2) { opacity:0; width:0; }
-        .mob-menu-btn.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-
-        .mob-nav { position:fixed; inset:0; background:rgba(10,10,10,0.97); backdrop-filter:blur(16px); z-index:550; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; pointer-events:none; opacity:0; transform:translateY(-20px); transition:opacity .35s ease,transform .35s ease; }
-        .mob-nav.open { opacity:1; transform:translateY(0); pointer-events:all; }
-        .mob-nav a { font-family:'Playfair Display',serif; font-size:2.4rem; color:#e8e0d5; text-decoration:none; padding:14px 0; letter-spacing:1px; position:relative; transition:color .25s; }
-        .mob-nav a::after { content:''; position:absolute; left:50%; bottom:8px; width:0; height:1px; background:#c9922a; transform:translateX(-50%); transition:width .3s ease; }
-        .mob-nav a:hover,.mob-nav a:active { color:#c9922a; }
-        .mob-nav a:hover::after { width:80%; }
-        .mob-nav-divider { width:40px; height:1px; background:linear-gradient(to right,transparent,#c9922a,transparent); margin:10px 0; }
-        .mob-nav-cta { margin-top:20px; padding:14px 40px; background:#c9922a; color:#0d0d0d !important; font-family:'DM Sans',sans-serif !important; font-size:0.9rem !important; font-weight:700; letter-spacing:2px; text-transform:uppercase; border-radius:50px; text-decoration:none; box-shadow:0 0 30px rgba(201,146,42,0.4); transition:background .3s,transform .2s !important; }
-        .mob-nav-cta:hover { background:#f0c06a !important; transform:scale(1.04) !important; }
-        .mob-nav-cta::after { display:none !important; }
-
-        .mob-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:rgba(13,13,13,0.97); backdrop-filter:blur(12px); border-top:1px solid rgba(201,146,42,0.15); z-index:500; padding:10px 0 env(safe-area-inset-bottom,10px); justify-content:space-around; align-items:center; }
-        .mob-bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:4px; text-decoration:none; color:#666; font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; transition:color .2s; min-width:56px; }
-        .mob-bottom-nav a .bnav-icon { font-size:1.3rem; }
-        .mob-bottom-nav a.active,.mob-bottom-nav a:hover { color:#c9922a; }
-        .mob-bottom-nav a.active::after { content:''; display:block; width:4px; height:4px; background:#c9922a; border-radius:50%; margin:2px auto 0; }
-
         @media (max-width: 640px) {
             .mob-menu-btn { display:flex !important; }
             header nav { display:none !important; }
             .mob-bottom-nav { display:flex; }
             body { padding-bottom:72px; }
             .page { grid-template-columns:1fr !important; }
-            .panel-left { min-height:260px !important; }
-            .panel-left-content { padding:36px 24px !important; }
-            .panel-left h1 { font-size:2rem !important; }
-            .panel-right { padding:40px 24px !important; }
+            .panel-left { min-height:240px !important; }
+            .panel-left-content { padding:34px 22px !important; }
+            .panel-left h1 { font-size:1.9rem !important; }
+            .panel-right { padding:36px 22px !important; }
             .form-row { grid-template-columns:1fr !important; gap:0 !important; }
+            .send-toggle { flex-direction:column; }
             #cursor { display:none; }
         }
     </style>
@@ -345,21 +233,19 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-    <span class="toast-icon" id="toastIcon">✅</span>
-    <span id="toastMsg">Email sent successfully!</span>
+    <span id="toastIcon">✅</span>
+    <span id="toastMsg">Done!</span>
 </div>
 
 <!-- BOOKING SLIP MODAL -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="slip" id="bookingSlip">
         <div class="slip-header">
-            <div class="slip-logo">
-                Exclusive Female Barber
-                <small>Precision · Style · Confidence</small>
-            </div>
+            <div class="slip-logo">Exclusive Female Barber<small>Precision · Style · Confidence</small></div>
             <div class="slip-check">✓</div>
             <div class="slip-title">Booking Confirmed!</div>
             <div class="slip-subtitle">Your appointment request has been received.</div>
+            <div class="slip-via via-email" id="slipVia">📧 Sent via Email</div>
         </div>
         <div class="slip-tear"></div>
         <div class="slip-body">
@@ -368,41 +254,25 @@
                 <div class="slip-ref-num" id="slipRef">EFB-000000</div>
             </div>
             <div class="slip-rows">
-                <div class="slip-row">
-                    <span class="slip-row-label">Client</span>
-                    <span class="slip-row-value" id="slipName">—</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-row-label">Email</span>
-                    <span class="slip-row-value" id="slipEmail">—</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-row-label">Phone</span>
-                    <span class="slip-row-value" id="slipPhone">—</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-row-label">Date</span>
-                    <span class="slip-row-value gold" id="slipDate">—</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-row-label">Time</span>
-                    <span class="slip-row-value gold" id="slipTime">—</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-row-label">Style</span>
-                    <span class="slip-row-value" id="slipStyle">—</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-row-label">Notes</span>
-                    <span class="slip-row-value" id="slipNotes">—</span>
-                </div>
+                <div class="slip-row"><span class="slip-row-label">Client</span><span class="slip-row-value" id="slipName">—</span></div>
+                <div class="slip-row"><span class="slip-row-label">Email</span><span class="slip-row-value" id="slipEmail">—</span></div>
+                <div class="slip-row"><span class="slip-row-label">Phone</span><span class="slip-row-value" id="slipPhone">—</span></div>
+                <div class="slip-row"><span class="slip-row-label">Date</span><span class="slip-row-value gold" id="slipDate">—</span></div>
+                <div class="slip-row"><span class="slip-row-label">Time</span><span class="slip-row-value gold" id="slipTime">—</span></div>
+                <div class="slip-row"><span class="slip-row-label">Style</span><span class="slip-row-value" id="slipStyle">—</span></div>
+                <div class="slip-row"><span class="slip-row-label">Notes</span><span class="slip-row-value" id="slipNotes">—</span></div>
             </div>
         </div>
         <div class="slip-footer">
-            <p class="slip-note">📍 Hlogwane St, Orlando, Johannesburg 1803<br>📞 <a href="tel:+27813921887" style="color:var(--gold);text-decoration:none;">+27 81 392 1887</a> &nbsp;|&nbsp; Mon–Sat · 9AM–6PM</p>
+            <p class="slip-note">📍 Hlogwane St, Orlando, Johannesburg 1803<br>
+            📞 <a href="tel:+27813921887" style="color:var(--gold);text-decoration:none;">+27 81 392 1887</a> &nbsp;|&nbsp; Mon–Sat · 9AM–6PM</p>
             <div class="slip-actions">
-                <button class="slip-btn slip-btn-primary" onclick="printSlip()">🖨️ Print / Save Slip</button>
-                <button class="slip-btn slip-btn-secondary" onclick="closeModal()">Close</button>
+                <button class="slip-btn slip-btn-print" onclick="printSlip()">🖨️ Save / Print</button>
+                <button class="slip-btn slip-btn-wa" id="slipWaBtn" onclick="sendViaWhatsApp()">
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Also WhatsApp
+                </button>
+                <button class="slip-btn slip-btn-close" onclick="closeModal()">Close</button>
             </div>
         </div>
     </div>
@@ -417,27 +287,28 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
-        <a href="index.html">Services</a>
+        <a href="index.html#services">Services</a>
     </nav>
 </header>
 
 <div class="page">
+
     <!-- LEFT PANEL -->
     <div class="panel-left">
         <div class="panel-left-bg"></div>
         <div class="panel-left-content">
             <div class="panel-tag">✦ Appointments</div>
             <h1>Book Your<br><em>Next Look</em></h1>
-            <p>Fill in your details and we'll confirm your slot. Walk in looking good — walk out feeling unstoppable.</p>
+            <p style="color:rgba(255,255,255,0.5);font-size:0.95rem;line-height:1.8;margin-bottom:40px;">Fill in your details and we'll confirm your slot. Walk in looking good — walk out feeling unstoppable.</p>
             <div class="deco-line"></div>
             <div class="info-items">
                 <div class="info-item">
                     <div class="info-icon">📍</div>
-                    <div class="info-text"><strong>Location</strong> Hlogwane St, Orlando, Johannesburg 1803</div>
+                    <div class="info-text"><strong>Location</strong>Hlogwane St, Orlando, Johannesburg 1803</div>
                 </div>
                 <div class="info-item">
                     <div class="info-icon">⏰</div>
-                    <div class="info-text"><strong>Hours</strong> Monday – Saturday | 9:00 AM – 6:00 PM</div>
+                    <div class="info-text"><strong>Hours</strong>Monday – Saturday | 9:00 AM – 6:00 PM</div>
                 </div>
                 <div class="info-item">
                     <div class="info-icon">📞</div>
@@ -447,14 +318,30 @@
                     </div>
                 </div>
             </div>
+            <!-- Quick WhatsApp button -->
+            <a class="wa-quick" href="https://wa.me/27813921887" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Chat directly on WhatsApp
+            </a>
         </div>
     </div>
 
-    <!-- RIGHT PANEL — FORM -->
+    <!-- RIGHT PANEL -->
     <div class="panel-right">
         <div class="form-header">
-            <p class="section-label">Step 1 of 1</p>
-            <h2>Your Booking Details</h2>
+            <p class="section-label">Make a Booking</p>
+            <h2>Your Details</h2>
+        </div>
+
+        <!-- SEND METHOD TOGGLE -->
+        <div class="send-toggle">
+            <button type="button" class="toggle-btn t-email" id="toggleEmail" onclick="setSendMethod('email')">
+                📧 Send via Email
+            </button>
+            <button type="button" class="toggle-btn" id="toggleWa" onclick="setSendMethod('whatsapp')">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Send via WhatsApp
+            </button>
         </div>
 
         <form id="bookingForm" onsubmit="handleSubmit(event)">
@@ -468,12 +355,10 @@
                     <input type="email" id="email" name="Email" placeholder="you@email.com" required />
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <input type="tel" id="phone" name="Phone" placeholder="+27 00 000 0000" required />
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="date">Preferred Date</label>
@@ -488,11 +373,11 @@
             <div class="form-divider"></div>
 
             <span class="chip-label">Style Wanted</span>
-            <div class="style-chips" id="chips">
+            <div class="style-chips">
                 <div class="chip" data-value="Classic Cut">Classic Cut</div>
-                <div class="chip" data-value="Fade &amp; Line-Up">Fade &amp; Line-Up</div>
+                <div class="chip" data-value="Fade & Line-Up">Fade &amp; Line-Up</div>
                 <div class="chip" data-value="Hair Design">Hair Design</div>
-                <div class="chip" data-value="Wash &amp; Style">Wash &amp; Style</div>
+                <div class="chip" data-value="Wash & Style">Wash &amp; Style</div>
                 <div class="chip" data-value="Other">Other</div>
             </div>
             <input type="hidden" id="styleInput" name="Style" />
@@ -502,9 +387,16 @@
                 <textarea id="notes" name="Notes" placeholder="Describe the hairstyle you want, any references, or special requests..."></textarea>
             </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <span id="btnText">✦ Send Booking Request</span>
+            <!-- EMAIL BUTTON -->
+            <button type="submit" class="submit-btn" id="emailBtn">
+                <span id="btnText">📧 Send Booking via Email</span>
                 <div class="btn-spinner" id="btnSpinner"></div>
+            </button>
+
+            <!-- WHATSAPP BUTTON -->
+            <button type="submit" class="submit-btn" id="waBtn">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Send Booking via WhatsApp
             </button>
         </form>
     </div>
@@ -518,36 +410,43 @@
 </footer>
 
 <script>
-/* ─────────────────────────────────────────────
-   ⚠️  EMAILJS SETUP INSTRUCTIONS
-   1. Go to https://www.emailjs.com and create a FREE account
-   2. Add an Email Service (Gmail, Outlook, etc.) — copy the SERVICE ID
-   3. Create an Email Template with these variables:
-        {{to_name}}, {{from_name}}, {{from_email}}, {{phone}},
-        {{date}}, {{time}}, {{style}}, {{notes}}, {{ref}}
-      Set the "To Email" in the template to the salon owner's email.
-   4. Copy your PUBLIC KEY from Account > API Keys
-   5. Replace the three placeholders below:
-───────────────────────────────────────────── */
-const EMAILJS_PUBLIC_KEY  = 'urJTuKO3Wve4v3mLT';   // ← replace
-const EMAILJS_SERVICE_ID  = 'service_g34fs8e';   // ← replace
-const EMAILJS_TEMPLATE_ID = 'template_6iqi0m6';  // ← replace
-/* ─────────────────────────────────────────── */
+/* ── CONFIG ── */
+const EMAILJS_PUBLIC_KEY  = 'urJTuKO3Wve4v3mLT';
+const EMAILJS_SERVICE_ID  = 'service_g34fs8e';
+const EMAILJS_TEMPLATE_ID = 'template_6iqi0m6';
+const WA_NUMBER           = '27813921887'; // +27 81 392 1887
 
 emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-/* CURSOR */
+/* ── SEND METHOD ── */
+let sendMethod = 'email';
+
+function setSendMethod(method) {
+    sendMethod = method;
+    const eBtn = document.getElementById('emailBtn');
+    const wBtn = document.getElementById('waBtn');
+    const tE   = document.getElementById('toggleEmail');
+    const tW   = document.getElementById('toggleWa');
+    if (method === 'email') {
+        eBtn.style.display = 'flex'; wBtn.style.display = 'none';
+        tE.className = 'toggle-btn t-email'; tW.className = 'toggle-btn';
+        document.getElementById('email').required = true;
+    } else {
+        eBtn.style.display = 'none'; wBtn.style.display = 'flex';
+        tE.className = 'toggle-btn'; tW.className = 'toggle-btn t-wa';
+        document.getElementById('email').required = false;
+    }
+}
+
+/* ── CURSOR ── */
 const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-});
-document.querySelectorAll('a, button, .chip, input, select, textarea').forEach(el => {
+document.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
+document.querySelectorAll('a,button,.chip,input,select,textarea').forEach(el => {
     el.addEventListener('mouseenter', () => cursor.classList.add('big'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
 });
 
-/* STYLE CHIPS */
+/* ── CHIPS ── */
 document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
         document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -556,69 +455,53 @@ document.querySelectorAll('.chip').forEach(chip => {
     });
 });
 
-/* MIN DATE */
+/* ── MIN DATE ── */
 document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
-/* TOAST */
-function showToast(msg, isError = false) {
-    const toast = document.getElementById('toast');
+/* ── TOAST ── */
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
     document.getElementById('toastMsg').textContent = msg;
-    document.getElementById('toastIcon').textContent = isError ? '❌' : '✅';
-    toast.classList.toggle('error', isError);
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
+    document.getElementById('toastIcon').textContent = type === 'wa' ? '💬' : type === 'error' ? '❌' : '✅';
+    t.className = 'toast' + (type === 'error' ? ' t-error' : type === 'wa' ? ' t-wa' : '');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4500);
 }
 
-/* REFERENCE NUMBER */
-function genRef() {
-    return 'EFB-' + Math.random().toString(36).substring(2,8).toUpperCase();
+/* ── UTILS ── */
+function genRef() { return 'EFB-' + Math.random().toString(36).substring(2,8).toUpperCase(); }
+function fmtDate(v) {
+    if (!v) return '—';
+    return new Date(v+'T00:00:00').toLocaleDateString('en-ZA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+function fmtTime(v) {
+    if (!v) return '—';
+    const [h,m] = v.split(':'); const hr = parseInt(h);
+    return `${hr>12?hr-12:hr||12}:${m} ${hr>=12?'PM':'AM'}`;
 }
 
-/* FORMAT DATE */
-function fmtDate(val) {
-    if (!val) return '—';
-    const d = new Date(val + 'T00:00:00');
-    return d.toLocaleDateString('en-ZA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-}
-
-/* FORMAT TIME */
-function fmtTime(val) {
-    if (!val) return '—';
-    const [h, m] = val.split(':');
-    const hr = parseInt(h);
-    return `${hr > 12 ? hr-12 : hr || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
-}
-
-/* OPEN/CLOSE MODAL */
-function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+/* ── MODAL ── */
+function openModal()  { document.getElementById('modalOverlay').classList.add('open'); }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-document.getElementById('modalOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target.id === 'modalOverlay') closeModal(); });
 
-/* CONFETTI */
+/* ── CONFETTI ── */
 function spawnConfetti() {
     const slip = document.getElementById('bookingSlip');
-    const colors = ['#c9922a','#f0c06a','#fff','#e8e0d5'];
-    for (let i = 0; i < 18; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'confetti-dot';
-        const size = Math.random() * 8 + 4;
-        dot.style.cssText = `
-            width:${size}px; height:${size}px;
-            background:${colors[Math.floor(Math.random()*colors.length)]};
-            top:${Math.random()*40}%;
-            left:${Math.random()*100}%;
-            animation-delay:${Math.random()*0.4}s;
-            animation-duration:${Math.random()*0.8+1}s;
-        `;
-        slip.appendChild(dot);
-        setTimeout(() => dot.remove(), 2000);
-    }
+    ['#c9922a','#f0c06a','#fff','#25D366','#e8e0d5'].forEach(color => {
+        for (let i=0;i<4;i++) {
+            const d = document.createElement('div'); d.className='confetti-dot';
+            const s=Math.random()*7+4;
+            d.style.cssText=`width:${s}px;height:${s}px;background:${color};top:${Math.random()*40}%;left:${Math.random()*100}%;animation-delay:${Math.random()*0.5}s;animation-duration:${Math.random()*0.8+1}s;`;
+            slip.appendChild(d); setTimeout(()=>d.remove(),2500);
+        }
+    });
 }
 
-/* POPULATE SLIP */
-function populateSlip(data, ref) {
+/* ── POPULATE SLIP ── */
+let _data = {};
+function populateSlip(data, ref, method) {
+    _data = data;
     document.getElementById('slipRef').textContent   = ref;
     document.getElementById('slipName').textContent  = data.name  || '—';
     document.getElementById('slipEmail').textContent = data.email || '—';
@@ -627,33 +510,52 @@ function populateSlip(data, ref) {
     document.getElementById('slipTime').textContent  = fmtTime(data.time);
     document.getElementById('slipStyle').textContent = data.style || 'Not specified';
     document.getElementById('slipNotes').textContent = data.notes || 'None';
+    const via = document.getElementById('slipVia');
+    via.textContent = method === 'whatsapp' ? '💬 Sent via WhatsApp' : '📧 Sent via Email';
+    via.className   = method === 'whatsapp' ? 'slip-via via-wa' : 'slip-via via-email';
 }
 
-/* PRINT SLIP */
+/* ── WHATSAPP MESSAGE BUILDER ── */
+function buildWaMsg(data, ref) {
+    return `Hi! I'd like to book an appointment 💈%0A%0A` +
+        `*Name:* ${data.name}%0A` +
+        `*Email:* ${data.email || 'N/A'}%0A` +
+        `*Phone:* ${data.phone}%0A` +
+        `*Date:* ${fmtDate(data.date)}%0A` +
+        `*Time:* ${fmtTime(data.time)}%0A` +
+        `*Style:* ${data.style || 'Not specified'}%0A` +
+        `*Notes:* ${data.notes || 'None'}%0A` +
+        `*Ref:* ${ref}`;
+}
+
+/* Slip WA button */
+function sendViaWhatsApp() {
+    window.open(`https://wa.me/${WA_NUMBER}?text=${buildWaMsg(_data, document.getElementById('slipRef').textContent)}`, '_blank');
+}
+
+/* ── PRINT SLIP ── */
 function printSlip() {
     const slip = document.getElementById('bookingSlip').outerHTML;
-    const w = window.open('', '_blank');
-    w.document.write(`
-        <html><head><title>Booking Slip</title>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-        <style>
-            body{margin:0;padding:20px;background:#0f0f0f;color:#e8e0d5;font-family:'DM Sans',sans-serif;display:flex;justify-content:center;}
-            :root{--gold:#c9922a;--gold-light:#f0c06a;--black:#0d0d0d;--dark:#151515;--text:#e8e0d5;--muted:#888;--border:rgba(255,255,255,0.08);}
-            ${document.querySelector('style').textContent}
-        </style></head>
-        <body>${slip}<script>window.onload=()=>window.print()<\/script></body></html>
-    `);
+    const w = window.open('','_blank');
+    w.document.write(`<html><head><title>Booking Slip</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <style>body{margin:0;padding:20px;background:#0f0f0f;display:flex;justify-content:center;font-family:'DM Sans',sans-serif;}
+    :root{--gold:#c9922a;--gold-light:#f0c06a;--black:#0d0d0d;--text:#e8e0d5;--muted:#888;--border:rgba(255,255,255,0.08);--wa:#25D366;}
+    ${document.querySelector('style').textContent}</style></head>
+    <body>${slip}<script>window.onload=()=>window.print()<\/script></body></html>`);
     w.document.close();
 }
 
-/* MAIN SUBMIT HANDLER */
+/* ── RESET ── */
+function resetForm() {
+    document.getElementById('bookingForm').reset();
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    document.getElementById('styleInput').value='';
+}
+
+/* ── MAIN SUBMIT ── */
 async function handleSubmit(e) {
     e.preventDefault();
-
-    const btn     = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const spinner = document.getElementById('btnSpinner');
-
     const data = {
         name:  document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim(),
@@ -663,115 +565,59 @@ async function handleSubmit(e) {
         style: document.getElementById('styleInput').value || 'Not specified',
         notes: document.getElementById('notes').value.trim() || 'None',
     };
-
     const ref = genRef();
 
-    /* Show spinner */
-    btn.disabled = true;
-    btnText.style.display = 'none';
-    spinner.style.display = 'block';
+    /* WHATSAPP */
+    if (sendMethod === 'whatsapp') {
+        window.open(`https://wa.me/${WA_NUMBER}?text=${buildWaMsg(data,ref)}`, '_blank');
+        showToast('💬 WhatsApp opened with your booking!', 'wa');
+        setTimeout(() => { populateSlip(data,ref,'whatsapp'); openModal(); spawnConfetti(); resetForm(); }, 600);
+        return;
+    }
 
-    const templateParams = {
-        to_name:   'Salon Owner',
-        from_name: data.name,
-        from_email:data.email,
-        phone:     data.phone,
-        date:      fmtDate(data.date),
-        time:      fmtTime(data.time),
-        style:     data.style,
-        notes:     data.notes,
-        ref:       ref,
-    };
+    /* EMAIL */
+    const btn = document.getElementById('emailBtn');
+    const txt = document.getElementById('btnText');
+    const spn = document.getElementById('btnSpinner');
+    btn.disabled=true; txt.style.display='none'; spn.style.display='block';
 
     try {
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
-
-        /* Success */
-        btnText.style.display = 'inline';
-        spinner.style.display = 'none';
-        btn.disabled = false;
-
-        showToast('📨 Email sent to the salon! Opening your booking slip…');
-
-        setTimeout(() => {
-            populateSlip(data, ref);
-            openModal();
-            spawnConfetti();
-            document.getElementById('bookingForm').reset();
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            document.getElementById('styleInput').value = '';
-        }, 600);
-
-    } catch (err) {
-        console.error('EmailJS error:', err);
-
-        btnText.style.display = 'inline';
-        spinner.style.display = 'none';
-        btn.disabled = false;
-
-        /* Still show slip even if email fails, but warn */
-        showToast('⚠️ Email could not send — but here is your slip. Please call us to confirm.', true);
-
-        setTimeout(() => {
-            populateSlip(data, ref);
-            openModal();
-            spawnConfetti();
-        }, 600);
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_name:'Salon Owner', from_name:data.name, from_email:data.email,
+            phone:data.phone, date:fmtDate(data.date), time:fmtTime(data.time),
+            style:data.style, notes:data.notes, ref,
+        });
+        txt.style.display='inline'; spn.style.display='none'; btn.disabled=false;
+        showToast('📨 Email sent! Opening your booking slip…');
+        setTimeout(() => { populateSlip(data,ref,'email'); openModal(); spawnConfetti(); resetForm(); }, 600);
+    } catch(err) {
+        console.error(err);
+        txt.style.display='inline'; spn.style.display='none'; btn.disabled=false;
+        showToast('⚠️ Email failed — showing slip anyway. Please call to confirm.','error');
+        setTimeout(() => { populateSlip(data,ref,'email'); openModal(); }, 600);
     }
 }
 </script>
 
 <script>
-(function() {
-    const header = document.querySelector('header');
-    if (header) {
-        const btn = document.createElement('button');
-        btn.className = 'mob-menu-btn';
-        btn.setAttribute('aria-label', 'Open menu');
-        btn.innerHTML = '<span></span><span></span><span></span>';
-        header.appendChild(btn);
-    }
-
-    const drawer = document.createElement('nav');
-    drawer.className = 'mob-nav';
-    drawer.innerHTML = `
-      <a href="index.html" onclick="closeMobNav()">Home</a>
-      <div class="mob-nav-divider"></div>
-      <a href="about.html" onclick="closeMobNav()">About</a>
-      <div class="mob-nav-divider"></div>
-      <a href="index.html#services" onclick="closeMobNav()">Services</a>
-      <div class="mob-nav-divider"></div>
-      <a href="index.html#contact" onclick="closeMobNav()">Contact</a>
-      <a href="booking.html" class="mob-nav-cta">Book Now ✦</a>
-    `;
+/* ── MOBILE NAV ── */
+(function(){
+    const hdr = document.querySelector('header');
+    if(hdr){const b=document.createElement('button');b.className='mob-menu-btn';b.setAttribute('aria-label','Open menu');b.innerHTML='<span></span><span></span><span></span>';hdr.appendChild(b);}
+    const drawer=document.createElement('nav');drawer.className='mob-nav';
+    drawer.innerHTML=`<a href="index.html" onclick="closeMobNav()">Home</a><div class="mob-nav-divider"></div><a href="about.html" onclick="closeMobNav()">About</a><div class="mob-nav-divider"></div><a href="index.html#services" onclick="closeMobNav()">Services</a><div class="mob-nav-divider"></div><a href="index.html#contact" onclick="closeMobNav()">Contact</a><a href="booking.html" class="mob-nav-cta">Book Now ✦</a>`;
     document.body.appendChild(drawer);
-
-    const bnav = document.createElement('div');
-    bnav.className = 'mob-bottom-nav';
-    bnav.innerHTML = `
-      <a href="index.html"><span class="bnav-icon">🏠</span>Home</a>
-      <a href="about.html"><span class="bnav-icon">✨</span>About</a>
-      <a href="index.html#services"><span class="bnav-icon">✂️</span>Services</a>
-      <a href="booking.html"><span class="bnav-icon">📅</span>Book</a>
-      <a href="index.html#contact"><span class="bnav-icon">📞</span>Contact</a>
-    `;
+    const bnav=document.createElement('div');bnav.className='mob-bottom-nav';
+    bnav.innerHTML=`<a href="index.html"><span class="bnav-icon">🏠</span>Home</a><a href="about.html"><span class="bnav-icon">✨</span>About</a><a href="index.html#services"><span class="bnav-icon">✂️</span>Services</a><a href="booking.html" class="active"><span class="bnav-icon">📅</span>Book</a><a href="index.html#contact"><span class="bnav-icon">📞</span>Contact</a>`;
     document.body.appendChild(bnav);
-
-    const menuBtn = document.querySelector('.mob-menu-btn');
-    function openMobNav() { drawer.classList.add('open'); menuBtn.classList.add('open'); document.body.style.overflow = 'hidden'; }
-    window.closeMobNav = function() { drawer.classList.remove('open'); menuBtn.classList.remove('open'); document.body.style.overflow = ''; };
-    menuBtn.addEventListener('click', () => drawer.classList.contains('open') ? closeMobNav() : openMobNav());
-    drawer.addEventListener('click', e => { if (e.target === drawer) closeMobNav(); });
-
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.mob-bottom-nav a').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href.startsWith(currentPage)) link.classList.add('active');
-    });
-
-    let startY = 0;
-    drawer.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
-    drawer.addEventListener('touchend', e => { if (e.changedTouches[0].clientY - startY > 60) closeMobNav(); }, { passive: true });
+    const menuBtn=document.querySelector('.mob-menu-btn');
+    function openMobNav(){drawer.classList.add('open');menuBtn.classList.add('open');document.body.style.overflow='hidden';}
+    window.closeMobNav=function(){drawer.classList.remove('open');menuBtn.classList.remove('open');document.body.style.overflow='';};
+    menuBtn.addEventListener('click',()=>drawer.classList.contains('open')?closeMobNav():openMobNav());
+    drawer.addEventListener('click',e=>{if(e.target===drawer)closeMobNav();});
+    let sy=0;
+    drawer.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;},{passive:true});
+    drawer.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-sy>60)closeMobNav();},{passive:true});
 })();
 </script>
 </body>
